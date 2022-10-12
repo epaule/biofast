@@ -160,9 +160,9 @@ class GzipReader < BufferedReader
 		@closed = true
 		KlibZ.gzclose(@fp) >= 0 || raise "GzipReader: failed to close the file"
 	end
-	def unbuffered_read(buf : Bytes)
+	def unbuffered_read(slice : Bytes)
 		return 0 if @closed
-		ret = KlibZ.gzread(@fp, buf, buf.size.to_u32)
+		ret = KlibZ.gzread(@fp, slice, slice.size.to_u32)
 		raise "GzipReader: failed to read data" if ret < 0
 		return ret
 	end
