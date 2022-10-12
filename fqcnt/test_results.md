@@ -9,8 +9,8 @@
 ### raw input
 | Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
 |:---|---:|---:|---:|---:|
+| `bin/fqcnt_needletail biofast-data-v1/M_abscessus_HiSeq.fq` | 531.6 ± 154.2 | 476.6 | 970.4 | 1.00 |
 | `./fqcnt_cr1_klib biofast-data-v1/M_abscessus_HiSeq.fq` | 750.9 ± 27.1 | 715.0 | 793.7 | 1.41 ± 0.41 |
 | `./fqcnt_c1_kseq biofast-data-v1/M_abscessus_HiSeq.fq` | 840.7 ± 18.8 | 822.8 | 868.7 | 1.58 ± 0.46 |
 | `bin/fqcnt_rustbio biofast-data-v1/M_abscessus_HiSeq.fq` | 1626.9 ± 42.7 | 1586.2 | 1741.0 | 3.06 ± 0.89 |
-| `bin/fqcnt_needletail biofast-data-v1/M_abscessus_HiSeq.fq` | 531.6 ± 154.2 | 476.6 | 970.4 | 1.00 |
 | `crystal fqcnt_cr1_klib.cr biofast-data-v1/M_abscessus_HiSeq.fq` | 4392.6 ± 88.1 | 4300.8 | 4605.8 | 8.26 ± 2.40 |
