@@ -1,6 +1,7 @@
-CFLAGS=-g -Wall -O2
+CFLAGS=-g -Wall -O3
+CRYSTAL_FLAGS=--release --no-debug
 LIBS=-lz
-PROG=fqcnt_c1_kseq fqcnt_nim1_klib fqcnt_go1 fqcnt_rs
+PROG=fqcnt_cr1_klib fqcnt_c1_kseq fqcnt_nim1_klib fqcnt_go1 fqcnt_rs
 NIM=nim
 GO=go
 CARGO=cargo
@@ -11,6 +12,9 @@ PROJECT_ROOT := $(shell realpath ../)
 .PHONY:all clean
 
 all:$(PROG)
+
+fqcnt_cr1_klib:fqcnt_cr1_klib.cr
+	crystal build $< $(CRYSTAL_FLAGS)
 
 fqcnt_c1_kseq:fqcnt_c1_kseq.c ../lib/kseq.h
 	$(CC) $(CFLAGS) -I../lib -o $@ $< $(LIBS)
