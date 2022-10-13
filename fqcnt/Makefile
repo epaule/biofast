@@ -14,7 +14,7 @@ PROJECT_ROOT := $(shell realpath ../)
 all:$(PROG)
 
 fqcnt_cr1_klib:fqcnt_cr1_klib.cr
-	crystal build $< $(CRYSTAL_FLAGS)
+	crystal build $(CRYSTAL_FLAGS) $<
 
 fqcnt_c1_kseq:fqcnt_c1_kseq.c ../lib/kseq.h
 	$(CC) $(CFLAGS) -I../lib -o $@ $< $(LIBS)
