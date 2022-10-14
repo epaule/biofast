@@ -20,7 +20,7 @@
 | `fqcnt_c1_kseq M_abscessus_HiSeq.fq` | 0.902 ± 0.051 | 0.836 | 0.995 | 1.80 ± 0.11 |
 | `fqcnt_nim1_klib M_abscessus_HiSeq.fq` | 1.172 ± 0.005 | 1.165 | 1.182 | 2.35 ± 0.04 |
 | `fqcnt_go1 M_abscessus_HiSeq.fq` | 1.505 ± 0.027 | 1.485 | 1.577 | 3.01 ± 0.07 |
-| `bin/fqcnt_rustbio M_abscessus_HiSeq.fq` | 1.621 ± 0.018 | 1.603 | 1.664 | 3.24 ± 0.07 |
+| `fqcnt_rustbio M_abscessus_HiSeq.fq` | 1.621 ± 0.018 | 1.603 | 1.664 | 3.24 ± 0.07 |
 | `crystal fqcnt_cr1_klib.cr M_abscessus_HiSeq.fq` | 4.433 ± 0.124 | 4.334 | 4.718 | 8.87 ± 0.29 |
 | `fqcnt_py1_4l.py M_abscessus_HiSeq.fq` | 8.527 ± 0.353 | 8.250 | 9.489 | 17.06 ± 0.76 |
 | `fqcnt_lua1_klib.lua M_abscessus_HiSeq.fq` | 20.243 ± 0.166 | 20.026 | 20.575 | 40.50 ± 0.77 |
