@@ -31,14 +31,14 @@ iterator getopt*(argv: var seq[string], ostr: string, longopts: seq[
     if a[0..1] == "--": # long option
       pos = -1
       var
-        pos_eq = find(a, '=')
+        posEq = find(a, '=')
         o = a[2 ..< a.len]
         c = 0
         k = -1
         tmp = ""
-      if pos_eq > 0:
-        o = a[2 ..< pos_eq]
-        arg = a[pos_eq+1 ..< a.len]
+      if posEq > 0:
+        o = a[2 ..< posEq]
+        arg = a[posEq+1 ..< a.len]
       for i, x in longopts: # look for matching long options
         var y = x
         if y[^1] == '=': y = y[0 ..< y.len-1]
@@ -49,7 +49,7 @@ iterator getopt*(argv: var seq[string], ostr: string, longopts: seq[
             break
       if c == 1: # find a unique match
         lopt = tmp
-        if pos_eq < 0 and longopts[k][^1] == '=' and cur + 1 < argv.len:
+        if posEq < 0 and longopts[k][^1] == '=' and cur + 1 < argv.len:
           arg = argv[cur + 1]
           argv.delete(cur + 1)
     else: # short option
@@ -130,13 +130,13 @@ proc read(f: var GzFile, buf: var string, sz: int, offset: int = 0):
 ###################
 
 type
-  Bufio*[T] = tuple[fp: T, buf: string, st, en, sz: int, EOF: bool]
+  Bufio*[T] = tuple[fp: T, buf: string, st, en, sz: int, eof: bool]
 
 proc open*[T](f: var Bufio[T], fn: string, mode: FileMode = fmRead,
     sz: int = 0x10000): int {.discardable.} =
   assert(mode == fmRead) # only fmRead is supported for now
   result = f.fp.open(fn, mode)
-  (f.st, f.en, f.sz, f.EOF) = (0, 0, sz, false)
+  (f.st, f.en, f.sz, f.eof) = (0, 0, sz, false)
   f.buf.setLen(sz)
 
 proc xopen*[T](fn: string, mode: FileMode = fmRead,
@@ -149,20 +149,20 @@ proc close*[T](f: var Bufio[T]): int {.discardable.} =
   return f.fp.close()
 
 proc eof*[T](f: Bufio[T]): bool {.noSideEffect.} =
-  result = (f.EOF and f.st >= f.en)
+  result = (f.eof and f.st >= f.en)
 
 proc readByte*[T](f: var Bufio[T]): int =
-  if f.EOF and f.st >= f.en: return -1
+  if f.eof and f.st >= f.en: return -1
   if f.st >= f.en:
     (f.st, f.en) = (0, f.fp.read(f.buf, f.sz))
-    if f.en == 0: f.EOF = true; return -1
-    if f.en < 0: f.EOF = true; return -2
+    if f.en == 0: f.eof = true; return -1
+    if f.en < 0: f.eof = true; return -2
   result = int(f.buf[f.st])
   f.st += 1
 
 proc read*[T](f: var Bufio[T], buf: var string, sz: int,
     offset: int = 0): int {.discardable.} =
-  if f.EOF and f.st >= f.en: return 0
+  if f.eof and f.st >= f.en: return 0
   buf.setLen(offset)
   var off = offset
   var rest = sz
@@ -174,7 +174,7 @@ proc read*[T](f: var Bufio[T], buf: var string, sz: int,
       rest -= l
       off += l
     (f.st, f.en) = (0, f.fp.read(f.buf, f.sz))
-    if f.en < f.sz: f.EOF = true
+    if f.en < f.sz: f.eof = true
     if f.en == 0: return off - offset
   if buf.len < off + rest: buf.setLen(off + rest)
   copyMem(buf[off].addr, f.buf[f.st].addr, rest)
@@ -186,19 +186,19 @@ proc memchr(buf: pointer, c: cint, sz: csize_t): pointer {.cdecl, dynlib: libc,
 
 proc readUntil*[T](f: var Bufio[T], buf: var string, dret: var char,
     delim: int = -1, offset: int = 0): int {.discardable.} =
-  if f.EOF and f.st >= f.en: return -1
+  if f.eof and f.st >= f.en: return -1
   buf.setLen(offset)
   var off = offset
   var gotany = false
   while true:
     if f.en < 0: return -3
     if f.st >= f.en: # buffer is empty
-      if not f.EOF:
+      if not f.eof:
         (f.st, f.en) = (0, f.fp.read(f.buf, f.sz))
-        if f.en < f.sz: f.EOF = true
+        if f.en < f.sz: f.eof = true
         if f.en == 0: break
         if f.en < 0:
-          f.EOF = true
+          f.eof = true
           return -2
       else: break
     var x: int = f.en
@@ -291,15 +291,15 @@ proc sort*[S,T](a: var seq[Interval[S,T]]) =
 
 proc index*[S,T](a: var seq[Interval[S,T]]): int {.discardable.} =
   if a.len == 0: return 0
-  var is_srt = true
+  var isSrt = true
   for i in 1..<a.len:
     if a[i-1].st > a[i].st:
-      is_srt = false; break
-  if not is_srt: a.sort()
-  var last_i: int
+      isSrt = false; break
+  if not isSrt: a.sort()
+  var lastI: int
   var last: S
   for i in countup(0, a.len-1, 2): # leaves (i.e. at level 0)
-    (last_i, last, a[i].max) = (i, a[i].en, a[i].en)
+    (lastI, last, a[i].max) = (i, a[i].en, a[i].en)
   var k = 1
   while 1 shl k <= a.len: # process internal nodes in the bottom-up order
     let x = 1 shl (k - 1)
@@ -312,10 +312,10 @@ proc index*[S,T](a: var seq[Interval[S,T]]): int {.discardable.} =
       if e < el: e = el
       if e < er: e = er
       a[i].max = e
-    # point last_i to the parent of the original last_i
-    last_i = if ((last_i shr k) and 1) != 0: last_i - x else: last_i + x
-    if last_i < a.len and a[last_i].max > last: # update last accordingly
-      last = a[last_i].max
+    # point lastI to the parent of the original lastI
+    lastI = if ((lastI shr k) and 1) != 0: lastI - x else: lastI + x
+    if lastI < a.len and a[lastI].max > last: # update last accordingly
+      last = a[lastI].max
     k += 1
   return k - 1
 
