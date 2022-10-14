@@ -224,7 +224,7 @@ proc readUntil*[T](f: var Bufio[T], buf: var string, dret: var char,
       off += l
     f.st = x + 1
     if x < f.en: dret = f.buf[x]; break
-  if not gotany and f.eof(): return -1
+  if not gotany and f.eof: return -1
   if delim == -1 and off > 0 and buf[off - 1] == '\r':
     off -= 1
     buf.setLen(off)
